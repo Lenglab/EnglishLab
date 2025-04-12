@@ -1,113 +1,230 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>EnglishLab</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laboratorio de Inglés</title>
   <style>
     body {
-      position: relative;
-      margin: 0;
-      padding: 0;
       font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
       min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-    }
-
-    /* Capa blanca de fondo */
-    .background-layer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: relative;
       background-color: white;
-      z-index: -2;
     }
 
-    /* Imagen decorativa centrada con márgenes */
+    /* Fondo con imagen decorativa estilo marca de agua */
     body::before {
       content: "";
-      position: absolute;
-      top: 40px;
-      left: 40px;
-      right: 40px;
-      bottom: 40px;
+      position: fixed;
+      top: 50px;
+      left: 50px;
+      right: 50px;
+      bottom: 50px;
       background-image: url('https://i.postimg.cc/vZNgnNHw/logo-lourdes-1.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      opacity: 0.1;
+      opacity: 0.08;
       z-index: -1;
-      border-radius: 15px;
+      pointer-events: none;
     }
 
     .container {
-      background-color: rgba(255, 255, 255, 0.9);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 50px;
     }
 
-    h1 {
-      margin-bottom: 20px;
-      font-size: 28px;
+    .titulo {
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      padding: 15px 25px;
+      border-radius: 10px;
+      display: inline-block;
+      margin-bottom: 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 2px solid #001f3f;
     }
 
-    .button {
-      display: block;
-      width: 250px;
-      margin: 10px auto;
-      padding: 12px;
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu button {
+      width: 100%;
+      padding: 15px;
       font-size: 18px;
+      border: none;
       background-color: #3498db;
       color: white;
-      border: none;
-      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      border-radius: 5px;
+      transition: background 0.3s ease;
     }
 
-    .button:hover {
+    .menu button:hover {
       background-color: #2980b9;
+    }
+
+    .back-button {
+      margin-top: 20px;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #7f8c8d;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .test-button {
+      background-color: #2ecc71 !important;
+      font-weight: bold;
+    }
+
+    .menu button,
+    .back-button {
+      transition: all 0.2s ease;
+    }
+
+    .menu button:hover,
+    .back-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu button:active,
+    .back-button:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
 <body>
-  <div class="background-layer"></div>
-
   <div class="container" id="main-menu">
-    <h1>Seleccione su grado:</h1>
-    <button class="button" onclick="showGradeMenu('sixth')">Sexto</button>
-    <button class="button" onclick="showGradeMenu('seventh')">Séptimo</button>
-    <button class="button" onclick="showGradeMenu('eighth')">Octavo</button>
-    <button class="button" onclick="showGradeMenu('ninth')">Noveno</button>
+    <h1 class="titulo">Bienvenido a tu laboratorio de inglés</h1>
+    <div class="menu">
+      <button onclick="showGrade('sexto')">Sexto</button>
+      <button onclick="showGrade('septimo')">Séptimo</button>
+      <button onclick="showGrade('octavo')">Octavo</button>
+      <button onclick="showGrade('noveno')">Noveno</button>
+      <button onclick="showGrade('decimo')">Décimo</button>
+      <button onclick="showGrade('once')">Once</button>
+    </div>
   </div>
 
   <div class="container" id="grade-menu" style="display:none;">
-    <h1 id="grade-title"></h1>
-    <button class="button" onclick="goBack()">Volver</button>
+    <h1 class="titulo" id="grade-title"></h1>
+    <div class="menu" id="topics-list"></div>
+    <button class="back-button" onclick="goBack()">Volver</button>
   </div>
 
   <script>
-    function showGradeMenu(grade) {
-      document.getElementById('main-menu').style.display = 'none';
-      document.getElementById('grade-menu').style.display = 'block';
-      let gradeName = {
-        sixth: "Sexto",
-        seventh: "Séptimo",
-        eighth: "Octavo",
-        ninth: "Noveno"
-      }[grade];
-      document.getElementById('grade-title').innerText = "Grado: " + gradeName;
+    const topicsByGrade = {
+      sexto: [
+        "Saludos y presentaciones",
+        "Alfabeto y números",
+        "Colores y formas",
+        "Mi familia",
+        "La escuela y útiles escolares",
+        "Días de la semana y meses",
+        "Partes del cuerpo",
+        "Animales y comidas",
+        "Verbo to be (afirmativa, negativa, pregunta)",
+        "✅ Pruebas"
+      ],
+      septimo: [
+        "Rutinas diarias",
+        "Horas y actividades",
+        "Pasatiempos y deportes",
+        "Lugares de la ciudad",
+        "Preposiciones de lugar",
+        "Verbo can (habilidades)",
+        "Presente simple (afirmativa y negativa)",
+        "✅ Pruebas"
+      ],
+      octavo: [
+        "Pasado simple (regulares e irregulares)",
+        "Adverbios de frecuencia",
+        "Descripciones físicas y de personalidad",
+        "Comparativos y superlativos",
+        "Pronombres personales y posesivos",
+        "Climas y estaciones",
+        "Vocabulario de viajes",
+        "✅ Pruebas"
+      ],
+      noveno: [
+        "Futuro con will y going to",
+        "Presente perfecto",
+        "Condicionales (tipo 0 y 1)",
+        "Voz pasiva (presente)",
+        "Conectores (although, however, etc.)",
+        "Opiniones y debates",
+        "Inglés para tecnología",
+        "✅ Pruebas"
+      ],
+      decimo: [
+        "Reported speech",
+        "Condicionales (tipo 2 y 3)",
+        "Voz pasiva (tiempos compuestos)",
+        "Verbos modales (should, must, might)",
+        "Inglés académico",
+        "Redacción de ensayos",
+        "Tiempos perfectos",
+        "✅ Pruebas"
+      ],
+      once: [
+        "Inglés profesional (entrevistas, CVs)",
+        "Preparación para exámenes estandarizados",
+        "Ensayos argumentativos",
+        "Discursos y presentaciones",
+        "Debates avanzados",
+        "Comprensión lectora crítica",
+        "Inglés para la universidad",
+        "✅ Pruebas"
+      ]
+    };
+
+    function showGrade(grade) {
+      document.getElementById("main-menu").style.display = "none";
+      const gradeMenu = document.getElementById("grade-menu");
+      gradeMenu.style.display = "flex";
+      document.getElementById("grade-title").textContent = `Temas de grado ${capitalize(grade)}`;
+      
+      const topicsList = document.getElementById("topics-list");
+      topicsList.innerHTML = "";
+
+      topicsByGrade[grade].forEach(topic => {
+        const button = document.createElement("button");
+        button.textContent = topic;
+        if (topic.toLowerCase().includes("prueba")) {
+          button.classList.add("test-button");
+        }
+        topicsList.appendChild(button);
+      });
     }
 
     function goBack() {
-      document.getElementById('grade-menu').style.display = 'none';
-      document.getElementById('main-menu').style.display = 'block';
+      document.getElementById("grade-menu").style.display = "none";
+      document.getElementById("main-menu").style.display = "flex";
+    }
+
+    function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
     }
   </script>
 </body>
