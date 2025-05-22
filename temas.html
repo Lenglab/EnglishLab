@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="scripts/style.css">
+</head>
+<body>
+    <div class="navbar">
+        <img src="https://i.postimg.cc/vZNgnNHw/logo-lourdes-1.png" width="70">
+        <p></p>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="container"></div>
+    
+        <div class="media">
+            <img>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Colegio Lourdes
+    </div>
+    
+    <script>
+        const selected = JSON.parse(localStorage.getItem('selectedTopic'));
+
+        if (selected) {
+            fetch('db/data.json')
+            .then(response => response.json())
+            .then(data => {
+                const { grade, period, topicKey } = selected;
+                const topicData = data[grade]?.[`periodo${period}`]?.[topicKey];
+
+                if (topicData) {
+                    document.querySelector('.navbar p').textContent = `Tema: ${topicData.title}`;
+                    document.querySelector('title').textContent = `${topicData.title}`;
+                    document.querySelector('.container').textContent = topicData.content || "Este tema aún no tiene contenido.";
+                    if(topicData.media) {
+                        const mediaElement = document.querySelector('.media img');
+
+                        mediaElement.src = topicData.media;
+                    } else {
+                        document.querySelector('.media img').style.display = 'none';
+                    }
+                } else {
+                document.querySelector('.container').src = "Tema no encontrado.";
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar el archivo JSON:", error);
+                document.querySelector('.container').textContent = "Error cargando el contenido.";
+            });
+        } else {
+            document.querySelector('.container').textContent = "No se seleccionó ningún tema.";
+        }
+    </script>
+</body>
+</html>

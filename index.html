@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laboratorio de Inglés</title>
+  <link rel="stylesheet" href="scripts/index.css">
+</head>
+<body>
+  <div class="container" id="main-menu">
+    <h1 class="titulo">Bienvenido a tu laboratorio de inglés</h1>
+    <div class="menu">
+      <button onclick="showGrade('sexto')">Sexto</button>
+      <button onclick="showGrade('septimo')">Séptimo</button>
+      <button onclick="showGrade('octavo')">Octavo</button>
+      <button onclick="showGrade('noveno')">Noveno</button>
+      <button onclick="showGrade('decimo')">Décimo</button>
+      <button onclick="showGrade('once')">Once</button>
+
+      <button>✅ Pruebas</button>
+    </div>
+  </div>
+
+  <div class="container" id="grade-menu" style="display:none;">
+    <h1 class="titulo" id="grade-title"></h1>
+    <div class="periods" id="period-menu">
+      <button class="period" onclick="showPeriod('1')">Periodo 1</button>
+      <button class="period" onclick="showPeriod('2')">Periodo 2</button>
+      <button class="period" onclick="showPeriod('3')">Periodo 3</button>
+    </div>
+    <div class="menu" id="topics-list"></div>
+    <button class="back-button" onclick="goBack()">Volver</button>
+  </div>
+
+  <script src="scripts/script.js"></script>
+</body>
+</html>
